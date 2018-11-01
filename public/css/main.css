@@ -1,0 +1,25 @@
+body{
+    padding: 8px;
+    font: 10pt Verdana,sans-serif;
+    color: black;
+}
+fieldset{
+    padding-left: 10px;
+    padding-top: 8px;
+    padding-bottom: 10px;
+}
+legend{
+    margin-left: 20px;
+}
+.ivu-btn{
+    color: #000000;
+}
+.ivu-table{
+    color: #000000;
+}
+
+.ivu-page-simple{
+    display: inline;
+    /*border-left: 2px solid black;*/
+    /*margin-left: 5px;*/
+}
