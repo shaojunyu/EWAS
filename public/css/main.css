@@ -23,3 +23,7 @@ legend{
     /*border-left: 2px solid black;*/
     /*margin-left: 5px;*/
 }
+
+.ivu-page-simple .ivu-page-simple-pager input{
+    width: 60px;
+}

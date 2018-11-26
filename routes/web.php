@@ -12,7 +12,9 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    $tissue = DB::table('ewas')->select('Tissue')->distinct()->get();
+    $trait = DB::table('ewas')->select('Trait')->distinct()->get();
+    return view('welcome', ['tissue'=>$tissue, 'trait'=>$trait]);
 });
 
 Route::post('/search','SearchController@search');

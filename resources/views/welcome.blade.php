@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>EWAS</title>
     <link rel="stylesheet" type="text/css" href="http://unpkg.com/iview/dist/styles/iview.css">
-    <script type="text/javascript" src="http://vuejs.org/js/vue.min.js"></script>
+    <script type="text/javascript" src="http://vuejs.org/js/vue.js"></script>
     <script type="text/javascript" src="http://unpkg.com/iview/dist/iview.min.js"></script>
     <script src="//unpkg.com/iview/dist/locale/en-US.js"></script>
 
@@ -63,47 +63,70 @@
         <fieldset>
             <legend>Phenotype</legend>
             Disease/Trait:
-            <input v-model="trait" type="text">
+            <input type="text" @focus="focusTrait" v-model="traits" width="300px">
+            <Modal v-model="trait_visible" title="Select Disease/Trait" :mask-closable="false">
+                <checkbox-group v-model="traits">
+                    @foreach ($trait as $t)
+                        <Checkbox label="{{$t->Trait}}">{{$t->Trait}}</Checkbox>
+                    @endforeach
+                </checkbox-group>
+            </Modal>
+
+            <span style="margin-left: 30px">Tissue: </span>
+            <input type="text" @focus="focusTissue" v-model="tissues">
+            <Modal v-model="tissue_visible" title="Select Tissue" :mask-closable="false">
+                <checkbox-group v-model="tissues">
+                    @foreach ($tissue as $t)
+                        <Checkbox label="{{$t->Tissue}}">{{$t->Tissue}}</Checkbox>
+                    @endforeach
+                </checkbox-group>
+            </Modal>
+
         </fieldset>
     </form>
 
     <div id="med_part" style="margin-top: 10px">
 
-        <i-button shape="circle" icon="ios-search" @click="show">Search</i-button>
-        <i-button shape="circle">Reset</i-button>
+        <i-button shape="circle" icon="ios-search" @click="search">Search</i-button>
+        <i-button shape="circle" @click="reset">Reset</i-button>
 
-        <span id="results_summary" class="current_counter">All <span class="counter_number">30032</span> results are selected</span>
-        <span id="cur_query" class="current_query">All chromosomes, all genes, All p-values, All Sources, All Functional classes, All Phenotypes</span>
-        <!-- <span id="cur_sel_display" class="current_query" ></span> -->
+        <span id="results_summary" class="current_counter">All <span class="counter_number">@{{ total }}</span> results are selected</span>
+        <span id="cur_query" class="current_query">All chromosomes, all genes, All p-values, All Phenotypes</span>
+        <i-button v-if="download_visible" shape="circle" @click="download" icon="md-download">Download</i-button>
 
-        <Page :current="2" :total=500 simple></Page>
+        <Page v-if="page_visible" :current=page :total=total class-name="page_input" simple
+              @on-change="pageChanged"></Page>
+
     </div>
     {{--<span>Selected: @{{ pval }}</span>--}}
     <br>
     <hr>
-
     <br>
-
-
-    <i-table stripe border size="small" :columns="columns" :data="tableData"></i-table>
-    {{--<template>--}}
-    {{--<Table :columns="columns1" :data="data1"></Table>--}}
-
-    {{--</template>--}}
+    <i-table stripe border size="small" :loading="loading" :columns="columns" :data="tableData"></i-table>
 </div>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="js/main.js"></script>
 <script>
     iview.lang('en-US');
     var app = new Vue({
         el: '#app',
         data: {
-            chr: 0,
-            gene_or_position: 0,
+            loading: false,
+            chr: '0',
+            gene_or_position: '0',
             gene_text: '',
-            pval: 0,
-            trait: '',
-            page:0,
-            total_page:0,
+            pval: '0',
+            page: 1,
+            total: 30309,
+            page_visible: false,
+            download_visible: false,
+
+            tissue_visible:false,
+            tissues:[],
+
+            traits:[],
+            trait_visible:false,
+
             columns: [
                 {
                     title: 'cpg_ID',
@@ -117,7 +140,7 @@
                 {
                     title: 'PMID',
                     key: 'PMID',
-                    width:100
+                    width: 100
                 },
                 {
                     title: 'GEO_ID',
@@ -148,31 +171,92 @@
             tableData: []
         },
         methods: {
-            show: function () {
-                // this.table_data = [{"cpg_ID": "cg20012308", "Trait": "Rheumatoid Arthritis",
-                //     "PMID": "23334450", "GEO_ID": "GSE42861", "chr": "1"}];
+            search: function () {
+                this.loading = true;
+                this.page = 1;
+                this.total = 0;
+                this.page_visible = true;
+                console.log(this.traits);
+                axios.post('/search', {
+                    chr: this.chr,
+                    gene_or_position: this.gene_or_position,
+                    gene_text: this.gene_text,
+                    pval: this.pval,
+                    trait: this.traits,
+                    tissue: this.tissues
+                })
+                    .then(function (response) {
+                        console.log(response.data);
+                        app.tableData = response.data.data;
+                        app.total = response.data.count;
+                        app.loading = false;
+                        if (app.total > 0) {
+                            app.download_visible = true;
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+
+            pageChanged: function (page) {
+                // console.log(page)
+                this.loading = true;
+                this.page_visible = true;
 
                 axios.post('/search', {
                     chr: this.chr,
                     gene_or_position: this.gene_or_position,
                     gene_text: this.gene_text,
                     pval: this.pval,
-                    trait: this.trait
+                    trait: this.traits,
+                    tissue: this.tissues,
+                    page: page
                 })
                     .then(function (response) {
                         console.log(response.data);
-                        app.tableData = [{
-                            "cpg_ID": "cg20012308", "Trait": "Rheumatoid Arthritis",
-                            "PMID": "23334450", "GEO_ID": "GSE42861", "chr": "1"
-                        }];
-                        app.tableData = response.data;
+                        app.tableData = response.data.data;
+                        app.total = response.data.count;
+                        app.loading = false;
+                        if (app.total > 0) {
+                            app.download_visible = true;
+                        }
                     })
                     .catch(function (error) {
                         console.log(error);
                     });
+            },
+            download: function () {
+
+            },
+
+            focusTrait: function () {
+                this.trait_visible = true;
+            },
+
+            focusTissue: function() {
+                this.tissue_visible = true;
+            },
+
+            reset: function () {
+                this.tableData = [];
+                this.chr = '0';
+                this.gene_or_position = '0';
+                this.gene_text = '';
+                this.pval = '0';
+                this.trait = '';
+                this.page = 0;
+                this.total = 30309;
+                this.loading = false;
+                this.page_visible = false;
+                this.download_visible = false;
+
+                this.tissues = [];
+                this.traits = [];
             }
         }
     })
+
 </script>
 </body>
 </html>
