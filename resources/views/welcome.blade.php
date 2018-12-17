@@ -63,24 +63,34 @@
         <fieldset>
             <legend>Phenotype</legend>
             Disease/Trait:
-            <input type="text" @focus="focusTrait" v-model="traits" width="300px">
-            <Modal v-model="trait_visible" title="Select Disease/Trait" :mask-closable="false">
-                <checkbox-group v-model="traits">
-                    @foreach ($trait as $t)
-                        <Checkbox label="{{$t->Trait}}">{{$t->Trait}}</Checkbox>
-                    @endforeach
-                </checkbox-group>
-            </Modal>
+            <i-select v-model="traits" style="width:200px">
+                @foreach ($trait as $t)
+                    <i-option value="{{$t->Trait}}">{{$t->Trait}}</i-option>
+                @endforeach
+            </i-select>
+            {{--<input type="text" @focus="focusTrait" v-model="traits" width="300px">--}}
+            {{--<Modal v-model="trait_visible" title="Select Disease/Trait" :mask-closable="false">--}}
+                {{--<checkbox-group v-model="traits">--}}
+                    {{--@foreach ($trait as $t)--}}
+                        {{--<Checkbox label="{{$t->Trait}}">{{$t->Trait}}</Checkbox>--}}
+                    {{--@endforeach--}}
+                {{--</checkbox-group>--}}
+            {{--</Modal>--}}
 
             <span style="margin-left: 30px">Tissue: </span>
-            <input type="text" @focus="focusTissue" v-model="tissues">
-            <Modal v-model="tissue_visible" title="Select Tissue" :mask-closable="false">
-                <checkbox-group v-model="tissues">
-                    @foreach ($tissue as $t)
-                        <Checkbox label="{{$t->Tissue}}">{{$t->Tissue}}</Checkbox>
-                    @endforeach
-                </checkbox-group>
-            </Modal>
+            <i-select v-model="tissues" style="width:200px">
+                @foreach ($tissue as $t)
+                    <i-option value="{{$t->Tissue}}">{{$t->Tissue}}</i-option>
+                @endforeach
+            </i-select>
+            {{--<input type="text" @focus="focusTissue" v-model="tissues">--}}
+            {{--<Modal v-model="tissue_visible" title="Select Tissue" :mask-closable="false">--}}
+                {{--<checkbox-group v-model="tissues">--}}
+                    {{--@foreach ($tissue as $t)--}}
+                        {{--<Checkbox label="{{$t->Tissue}}">{{$t->Tissue}}</Checkbox>--}}
+                    {{--@endforeach--}}
+                {{--</checkbox-group>--}}
+            {{--</Modal>--}}
 
         </fieldset>
     </form>
@@ -121,11 +131,11 @@
             page_visible: false,
             download_visible: false,
 
-            tissue_visible:false,
-            tissues:[],
+            tissue_visible: false,
+            tissues: [],
 
-            traits:[],
-            trait_visible:false,
+            traits: [],
+            trait_visible: false,
 
             columns: [
                 {
@@ -140,11 +150,37 @@
                 {
                     title: 'PMID',
                     key: 'PMID',
-                    width: 100
+                    width: 100,
+                    render: (h, params) => {
+                        if (params.row.PMID.length > 0) {
+                            return h('a', {
+                                attrs: {
+                                    href: 'https://www.ncbi.nlm.nih.gov/pubmed/?term=' + params.row.PMID,
+                                    target: '_blank'
+                                }
+                            }, params.row.PMID);
+                        }
+                        else {
+                            return '';
+                        }
+                    }
                 },
                 {
                     title: 'GEO_ID',
-                    key: 'GEO_ID'
+                    key: 'GEO_ID',
+                    render: (h, params) => {
+                        if (params.row.GEO_ID.length > 0) {
+                            return h('a', {
+                                attrs: {
+                                    href: 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=' + params.row.GEO_ID,
+                                    target: '_blank'
+                                }
+                            }, params.row.GEO_ID);
+                        }
+                        else {
+                            return '';
+                        }
+                    }
                 },
                 {
                     title: 'chr',
@@ -234,7 +270,7 @@
                 this.trait_visible = true;
             },
 
-            focusTissue: function() {
+            focusTissue: function () {
                 this.tissue_visible = true;
             },
 
@@ -251,8 +287,10 @@
                 this.page_visible = false;
                 this.download_visible = false;
 
-                this.tissues = [];
-                this.traits = [];
+                // this.tissues = [];
+                // this.traits = [];
+                this.tissues = '';
+                this.traits = '';
             }
         }
     })
