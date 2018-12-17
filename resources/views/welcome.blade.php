@@ -150,7 +150,7 @@
                 {
                     title: 'PMID',
                     key: 'PMID',
-                    width: 100,
+                    // width: 150,
                     render: (h, params) => {
                         if (params.row.PMID.length > 0) {
                             return h('a', {
