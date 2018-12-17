@@ -70,11 +70,11 @@
             </i-select>
             {{--<input type="text" @focus="focusTrait" v-model="traits" width="300px">--}}
             {{--<Modal v-model="trait_visible" title="Select Disease/Trait" :mask-closable="false">--}}
-                {{--<checkbox-group v-model="traits">--}}
-                    {{--@foreach ($trait as $t)--}}
-                        {{--<Checkbox label="{{$t->Trait}}">{{$t->Trait}}</Checkbox>--}}
-                    {{--@endforeach--}}
-                {{--</checkbox-group>--}}
+            {{--<checkbox-group v-model="traits">--}}
+            {{--@foreach ($trait as $t)--}}
+            {{--<Checkbox label="{{$t->Trait}}">{{$t->Trait}}</Checkbox>--}}
+            {{--@endforeach--}}
+            {{--</checkbox-group>--}}
             {{--</Modal>--}}
 
             <span style="margin-left: 30px">Tissue: </span>
@@ -85,11 +85,11 @@
             </i-select>
             {{--<input type="text" @focus="focusTissue" v-model="tissues">--}}
             {{--<Modal v-model="tissue_visible" title="Select Tissue" :mask-closable="false">--}}
-                {{--<checkbox-group v-model="tissues">--}}
-                    {{--@foreach ($tissue as $t)--}}
-                        {{--<Checkbox label="{{$t->Tissue}}">{{$t->Tissue}}</Checkbox>--}}
-                    {{--@endforeach--}}
-                {{--</checkbox-group>--}}
+            {{--<checkbox-group v-model="tissues">--}}
+            {{--@foreach ($tissue as $t)--}}
+            {{--<Checkbox label="{{$t->Tissue}}">{{$t->Tissue}}</Checkbox>--}}
+            {{--@endforeach--}}
+            {{--</checkbox-group>--}}
             {{--</Modal>--}}
 
         </fieldset>
@@ -100,8 +100,8 @@
         <i-button shape="circle" icon="ios-search" @click="search">Search</i-button>
         <i-button shape="circle" @click="reset">Reset</i-button>
 
-        <span id="results_summary" class="current_counter">All <span class="counter_number">@{{ total }}</span> results are selected</span>
-        <span id="cur_query" class="current_query">All chromosomes, all genes, All p-values, All Phenotypes</span>
+        <span id="results_summary" class="current_counter"> <span class="counter_number">@{{ total }}</span> results are selected</span>
+        {{--<span id="cur_query" class="current_query">All chromosomes, all genes, All p-values, All Phenotypes</span>--}}
         <i-button v-if="download_visible" shape="circle" @click="download" icon="md-download">Download</i-button>
 
         <Page v-if="page_visible" :current=page :total=total class-name="page_input" simple
@@ -159,8 +159,7 @@
                                     target: '_blank'
                                 }
                             }, params.row.PMID);
-                        }
-                        else {
+                        } else {
                             return '';
                         }
                     }
@@ -176,8 +175,7 @@
                                     target: '_blank'
                                 }
                             }, params.row.GEO_ID);
-                        }
-                        else {
+                        } else {
                             return '';
                         }
                     }
@@ -212,7 +210,7 @@
                 this.page = 1;
                 this.total = 0;
                 this.page_visible = true;
-                console.log(this.traits);
+                // console.log(this.traits);
                 axios.post('/search', {
                     chr: this.chr,
                     gene_or_position: this.gene_or_position,
@@ -222,7 +220,7 @@
                     tissue: this.tissues
                 })
                     .then(function (response) {
-                        console.log(response.data);
+                        // console.log(response.data);
                         app.tableData = response.data.data;
                         app.total = response.data.count;
                         app.loading = false;
@@ -250,7 +248,7 @@
                     page: page
                 })
                     .then(function (response) {
-                        console.log(response.data);
+                        // console.log(response.data);
                         app.tableData = response.data.data;
                         app.total = response.data.count;
                         app.loading = false;
@@ -262,7 +260,31 @@
                         console.log(error);
                     });
             },
+
             download: function () {
+                axios.post('/download', {
+                    chr: this.chr,
+                    gene_or_position: this.gene_or_position,
+                    gene_text: this.gene_text,
+                    pval: this.pval,
+                    trait: this.traits,
+                    tissue: this.tissues,
+                })
+                    .then(function (response) {
+                        // window.open(response.data, '_blank');
+
+                        var a = document.createElement('a');
+                        // var url = window.URL.createObjectURL(blob);
+                        var filename = 'what-you-want.txt';
+                        a.href = response.data;
+                        // a.download = filename;
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                        // console.log(response.data);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
 
             },
 

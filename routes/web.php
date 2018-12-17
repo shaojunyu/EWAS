@@ -18,3 +18,4 @@ Route::get('/', function () {
 });
 
 Route::post('/search','SearchController@search');
+Route::post('/download', 'SearchController@download');
