@@ -63,11 +63,12 @@
         <fieldset>
             <legend>Phenotype</legend>
             Disease/Trait:
-            <i-select v-model="traits" style="width:200px">
+            <select v-model="traits" style="width:200px">
+                <option value="" selected="selected">Any</option>
                 @foreach ($trait as $t)
-                    <i-option value="{{$t->Trait}}">{{$t->Trait}}</i-option>
+                    <option  value="{{$t->Trait}}">{{$t->Trait}}</option>
                 @endforeach
-            </i-select>
+            </select>
             {{--<input type="text" @focus="focusTrait" v-model="traits" width="300px">--}}
             {{--<Modal v-model="trait_visible" title="Select Disease/Trait" :mask-closable="false">--}}
             {{--<checkbox-group v-model="traits">--}}
@@ -78,11 +79,12 @@
             {{--</Modal>--}}
 
             <span style="margin-left: 30px">Tissue: </span>
-            <i-select v-model="tissues" style="width:200px">
+            <select v-model="tissues" style="width:200px">
+                <option selected value="">Any</option>
                 @foreach ($tissue as $t)
-                    <i-option value="{{$t->Tissue}}">{{$t->Tissue}}</i-option>
+                    <option value="{{$t->Tissue}}">{{$t->Tissue}}</option>
                 @endforeach
-            </i-select>
+            </select>
             {{--<input type="text" @focus="focusTissue" v-model="tissues">--}}
             {{--<Modal v-model="tissue_visible" title="Select Tissue" :mask-closable="false">--}}
             {{--<checkbox-group v-model="tissues">--}}
@@ -132,9 +134,9 @@
             download_visible: false,
 
             tissue_visible: false,
-            tissues: [],
+            tissues: '',
 
-            traits: [],
+            traits: '',
             trait_visible: false,
 
             columns: [

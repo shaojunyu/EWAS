@@ -19,3 +19,5 @@ Route::get('/', function () {
 
 Route::post('/search','SearchController@search');
 Route::post('/download', 'SearchController@download');
+
+Route::get('/test', 'TestController@updatePValue');
