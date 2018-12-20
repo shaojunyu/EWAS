@@ -66,7 +66,7 @@
             <select v-model="traits" style="width:200px">
                 <option value="" selected="selected">Any</option>
                 @foreach ($trait as $t)
-                    <option  value="{{$t->Trait}}">{{$t->Trait}}</option>
+                    <option value="{{$t->Trait}}">{{$t->Trait}}</option>
                 @endforeach
             </select>
             {{--<input type="text" @focus="focusTrait" v-model="traits" width="300px">--}}
@@ -107,7 +107,8 @@
         <i-button v-if="download_visible" shape="circle" @click="download" icon="md-download">Download</i-button>
 
         <Page v-if="page_visible" :current=page :total=total :page-size=pageSize class-name="page_input"
-              show-elevator show-sizer :page-size-opts=[10,20,50,100] @on-change="pageChanged" @on-page-size-change="pageSizeChanged"></Page>
+              show-elevator show-sizer :page-size-opts=[10,20,50,100] @on-change="pageChanged"
+              @on-page-size-change="pageSizeChanged"></Page>
 
     </div>
     {{--<span>Selected: @{{ pval }}</span>--}}
@@ -129,7 +130,7 @@
             gene_text: '',
             pval: '0',
             page: 1,
-            pageSize:20,
+            pageSize: 20,
             total: 30300,
             page_visible: false,
             download_visible: false,
@@ -265,7 +266,7 @@
                     });
             },
 
-            pageSizeChanged: function(page_size){
+            pageSizeChanged: function (page_size) {
                 this.loading = true;
                 this.page_visible = true;
 
