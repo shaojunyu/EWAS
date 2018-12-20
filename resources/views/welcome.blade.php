@@ -106,8 +106,8 @@
         {{--<span id="cur_query" class="current_query">All chromosomes, all genes, All p-values, All Phenotypes</span>--}}
         <i-button v-if="download_visible" shape="circle" @click="download" icon="md-download">Download</i-button>
 
-        <Page v-if="page_visible" :current=page :total=total class-name="page_input" simple
-              @on-change="pageChanged"></Page>
+        <Page v-if="page_visible" :current=page :total=total :page-size=pageSize class-name="page_input"
+              show-elevator show-sizer :page-size-opts=[10,20,50,100] @on-change="pageChanged" @on-page-size-change="pageSizeChanged"></Page>
 
     </div>
     {{--<span>Selected: @{{ pval }}</span>--}}
@@ -129,7 +129,8 @@
             gene_text: '',
             pval: '0',
             page: 1,
-            total: 30309,
+            pageSize:20,
+            total: 30300,
             page_visible: false,
             download_visible: false,
 
@@ -197,7 +198,7 @@
                 },
                 {
                     title: 'p_value',
-                    key: 'p_value'
+                    key: 'p_value_string'
                 },
                 {
                     title: 'Gene',
@@ -212,14 +213,15 @@
                 this.page = 1;
                 this.total = 0;
                 this.page_visible = true;
-                // console.log(this.traits);
                 axios.post('/search', {
                     chr: this.chr,
                     gene_or_position: this.gene_or_position,
                     gene_text: this.gene_text,
                     pval: this.pval,
                     trait: this.traits,
-                    tissue: this.tissues
+                    tissue: this.tissues,
+                    page: this.page,
+                    pageSize: this.pageSize
                 })
                     .then(function (response) {
                         // console.log(response.data);
@@ -236,7 +238,6 @@
             },
 
             pageChanged: function (page) {
-                // console.log(page)
                 this.loading = true;
                 this.page_visible = true;
 
@@ -247,7 +248,36 @@
                     pval: this.pval,
                     trait: this.traits,
                     tissue: this.tissues,
-                    page: page
+                    page: page,
+                    pageSize: this.pageSize
+                })
+                    .then(function (response) {
+                        // console.log(response.data);
+                        app.tableData = response.data.data;
+                        app.total = response.data.count;
+                        app.loading = false;
+                        if (app.total > 0) {
+                            app.download_visible = true;
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+
+            pageSizeChanged: function(page_size){
+                this.loading = true;
+                this.page_visible = true;
+
+                axios.post('/search', {
+                    chr: this.chr,
+                    gene_or_position: this.gene_or_position,
+                    gene_text: this.gene_text,
+                    pval: this.pval,
+                    trait: this.traits,
+                    tissue: this.tissues,
+                    page: this.page,
+                    pageSize: page_size
                 })
                     .then(function (response) {
                         // console.log(response.data);
@@ -306,7 +336,8 @@
                 this.pval = '0';
                 this.trait = '';
                 this.page = 0;
-                this.total = 30309;
+                this.pageSize = 20;
+                this.total = 30300;
                 this.loading = false;
                 this.page_visible = false;
                 this.download_visible = false;

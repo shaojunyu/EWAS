@@ -9,9 +9,18 @@ class TestController extends Controller
 {
     public function updatePValue()
     {
-        $ewas = EWAS::find(1);
-        $p = (float)$ewas->p_value;
-        $float_p = sprintf('%1.2f',$p);
-        return $float_p;
+        foreach (EWAS::all() as $ewas){
+            $gene = $ewas->Gene_name;
+            $gene_array = explode(';',$gene);
+            if(count($gene_array) > 1){
+                echo $gene . "<br>";
+                $u = array_unique($gene_array);
+                echo implode(';', $u) . "<br>";
+                $ewas->Gene_name = implode(';', $u);
+                $ewas->update();
+                //var_dump($u);
+            }
+
+        }
     }
 }

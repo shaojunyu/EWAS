@@ -18,6 +18,7 @@ class SearchController extends Controller
         $trait = $request->input('trait', '');
         $tissue = $request->input('tissue', '');
         $page = $request->input('page', 1);
+        $pageSize = $request->input('pageSize', 20);
 
         $ewas = EWAS::whereNotNull('cpg_ID');
 
@@ -61,12 +62,12 @@ class SearchController extends Controller
         }
 
         if ($order) {
-            $ewas = $ewas->orderBy('p_value', 'desc');
+            $ewas = $ewas->orderBy('p_value', 'asc');
         }
 
         $count = $ewas->count();
 
-        $res = $ewas->skip(($page - 1) * 10)->take(20)->get();
+        $res = $ewas->skip(($page - 1) * $pageSize)->take($pageSize)->get();
         return JsonResponse::create([
             'count' => $count,
             'current' => $page,
