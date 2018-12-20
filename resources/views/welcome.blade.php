@@ -304,16 +304,12 @@
                     tissue: this.tissues,
                 })
                     .then(function (response) {
-                        // window.open(response.data, '_blank');
-
                         var a = document.createElement('a');
-                        // var url = window.URL.createObjectURL(blob);
-                        var filename = 'what-you-want.txt';
                         a.href = response.data;
-                        // a.download = filename;
+                        a.setAttribute("type", "hidden");
+                        document.body.appendChild(a);
                         a.click();
-                        window.URL.revokeObjectURL(url);
-                        // console.log(response.data);
+                        document.body.removeChild(a);
                     })
                     .catch(function (error) {
                         console.log(error);
