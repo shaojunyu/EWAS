@@ -51,12 +51,12 @@
             <legend>Limit Results to</legend>
             p-value:<select v-model="pval">
                 <option value="0" selected="selected">Any</option>
-                <option value="1">&lt; 1e-10</option>
-                <option value="2">&lt; 1e-9</option>
-                <option value="3">&lt; 1e-8</option>
-                <option value="4">&lt; 1e-7</option>
-                <option value="5">&lt; 1e-6</option>
-                <option value="6">&lt; 1e-5</option>
+                <option value="1e-10">&lt; 1e-10</option>
+                <option value="1e-9">&lt; 1e-9</option>
+                <option value="1e-8">&lt; 1e-8</option>
+                <option value="1e-7">&lt; 1e-7</option>
+                <option value="1e-6">&lt; 1e-6</option>
+                <option value="1e-5">&lt; 1e-5</option>
             </select>
         </fieldset>
 
@@ -131,7 +131,7 @@
             pval: '0',
             page: 1,
             pageSize: 20,
-            total: 30300,
+            total: 30182,
             page_visible: false,
             download_visible: false,
 
@@ -334,7 +334,7 @@
                 this.trait = '';
                 this.page = 0;
                 this.pageSize = 20;
-                this.total = 30300;
+                this.total = 30182;
                 this.loading = false;
                 this.page_visible = false;
                 this.download_visible = false;

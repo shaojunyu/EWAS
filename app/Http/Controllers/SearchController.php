@@ -14,11 +14,12 @@ class SearchController extends Controller
         $chr = $request->input('chr', '0');
         $gene_or_position = $request->input('gene_or_position', '0');
         $gene_text = $request->input('gene_text', '');
-        $pval = $request->input('pval', 0);
+        $pval = $request->input('pval', 0.05);
         $trait = $request->input('trait', '');
         $tissue = $request->input('tissue', '');
         $page = $request->input('page', 1);
         $pageSize = $request->input('pageSize', 20);
+
 
         $ewas = EWAS::whereNotNull('cpg_ID');
 
@@ -37,19 +38,9 @@ class SearchController extends Controller
             $order = true;
         }
 
-        if ($pval > 0) {
-            $pval = pow(10, -(11 - $pval));
-            $ewas = $ewas->where('p_value', '<=', $pval);
-            $order = true;
-        }
-
-//        if(count($trait) > 0){
-//            $ewas = $ewas->whereIn('Trait', $trait);
-//        }
-//
-//        if(count($tissue) > 0){
-//            $ewas = $ewas->whereIn('Tissue', $tissue);
-//        }
+        if ($pval == 0)
+            $pval = 0.05;
+        $ewas = $ewas->where('p_value', '<=', (float)$pval);
 
         if (!empty($trait)) {
             $ewas = $ewas->where('Trait', $trait);
