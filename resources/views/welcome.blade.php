@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8">
     <title>EWAS</title>
-    <link rel="stylesheet" type="text/css" href="http://unpkg.com/iview/dist/styles/iview.css">
-    <script type="text/javascript" src="http://vuejs.org/js/vue.min.js"></script>
-    <script type="text/javascript" src="http://unpkg.com/iview/dist/iview.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="//unpkg.com/iview/dist/styles/iview.css">
+    <script type="text/javascript" src="//vuejs.org/js/vue.min.js"></script>
+    <script type="text/javascript" src="//unpkg.com/iview/dist/iview.min.js"></script>
     <script src="//unpkg.com/iview/dist/locale/en-US.js"></script>
 
     <link rel="stylesheet" href="css/main.css">
@@ -117,7 +117,7 @@
     <br>
     <i-table stripe border size="small" :loading="loading" :columns="columns" :data="tableData"></i-table>
 </div>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="//unpkg.com/axios/dist/axios.min.js"></script>
 <script src="js/main.js"></script>
 <script>
     iview.lang('en-US');
